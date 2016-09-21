@@ -1,0 +1,33 @@
+.flex-center{
+    display: flex;
+    justify-content: space-around;
+}
+
+.glyphicon-pencil:hover{
+    cursor: pointer;
+}
+.glyphicon-trash{
+    cursor: pointer;
+}
+
+body{
+  overflow-x: hidden;
+}
+
+textarea, input{
+  font-family: Tahoma, sans-serif;
+  color: black;
+  resize: none;
+  outline: none;
+  text-indent: 0px;
+}
+
+#bird{
+    width:2em;
+    margin-right: 0;
+    margin-left: 5px;
+    float: left;
+}
+#header-title{
+    padding-left: 5px;
+}

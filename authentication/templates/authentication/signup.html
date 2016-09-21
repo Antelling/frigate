@@ -1,0 +1,92 @@
+{% extends 'static_pages/main_template.html' %}
+
+{% block head %}
+    <style>
+        .fixed-width {
+            display: inline-block;
+            width: 20em;
+            margin: 5px;
+        }
+
+        #submit {
+            margin: 5px;
+        }
+    </style>
+
+    <script>
+    $(function(){
+        $("#username").focus();
+    })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+
+        <form id="user_form" method="post" action="/auth/signup/" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <span class="fixed-width">username, do not use special characters:</span> <input type=text id=username
+                                                                                             name=username/> <span
+                id="avail"></span>
+            <br/>
+            <br/>
+            <span class="fixed-width">password:</span> <input type=password id=password name=password/>
+            <br/>
+            <br/>
+            <span class="fixed-width">confirm password:</span> <input id="confirm" type="password">
+            <br/>
+            <br/>
+
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" id="submit" value="submit"/> <span
+                id="error">No username, no password</span>
+        </form>
+        <br/>
+    </div>
+    <br/>
+    <br/>
+
+    <script>
+        $(function () {
+            $('#submit').attr('disabled', 'disabled');
+
+            $('#username').on('input', function () {
+                updateError();
+                checkAvailable()
+            });
+            $('#password').on('input', updateError);
+            $('#confirm').on('input', updateError);
+
+            function updateError() {
+                var username = ' No username specified;';
+                var password = ' Passwords do not match or are missing';
+                if ($('#username').val().length > 0) username = '';
+                if ($('#password').val() == $('#confirm').val() && $('#confirm').val().length > 0) password = '';
+                if (!(username || password)) {
+                    $('#submit').removeAttr('disabled');
+                    $('#error').html('');
+                } else {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#error').html(username + password);
+
+                }
+            }
+
+            function checkAvailable() {
+                var username = $('#username').val();
+                $.get("/auth/is_username_available/" + username, function (data) {
+                    if (data === 'false') {
+                        $('#avail').html('Username already taken');
+                        $('#submit').attr('disabled', 'disabled');
+                    } else {
+                        $('#avail').html('');
+                        $('#submit').removeAttr('disabled');
+                    }
+                });
+            }
+        });
+    </script>
+
+{% endblock %}

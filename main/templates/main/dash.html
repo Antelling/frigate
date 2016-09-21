@@ -1,0 +1,63 @@
+{% extends 'static_pages/main_template.html' %}
+
+{% block head %}
+    <title>{{ user }} - Index of Papers</title>
+{% endblock %}
+
+{% block content %}
+
+
+    <a href="/main/new">New Paper</a>
+
+    <h1>Papers:</h1>
+    <div class="papers well">
+        {% if papers %}
+            {% for paper in papers %}
+                <div class="flex-center">
+                    <p>
+                        <a href="./main/edit/{{ paper.title }}">{{ paper.title }}</a>
+                        <span class="glyphicon glyphicon-pencil rename-paper"></span>
+                        <span class="glyphicon glyphicon-trash delete-paper"></span>
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>You have no papers. Click new paper to make one now.</p>
+        {% endif %}
+
+    </div>
+
+    <script>
+
+        $(function () {
+            $('.rename-paper').click(function () {
+                var oldName = $(this).prev().text();
+                var newName = encodeURIComponent(prompt('New name for paper: ').replace(/ /g, '_'));
+                var element = $(this);
+                $.post("/main/rename", {'old': oldName, 'new': newName})
+                        .done(function (data) {
+                            if (data === "renamed") {
+                                element.prev().text(newName);
+                            } else {
+                                alert("there is already a paper with that name");
+                            }
+                        });
+            });
+            $('.delete-paper').click(function() {
+                var really = confirm("are you sure you want to delete this paper?");
+                if(!really) return;
+                var rrealy = confirm("like, legit, It's going to be gone. Are you sure?");
+                if(!rrealy) return;
+                var paper = $(this).prev().prev().text();
+                $(this).parent().hide();
+                $.get("/main/delete/" + paper, function(data) {
+                    console.log("deleted");
+                });
+            })
+        });
+
+
+    </script>
+
+
+{% endblock %}

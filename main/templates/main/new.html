@@ -1,0 +1,30 @@
+{% extends 'static_pages/main_template.html' %}
+
+{% block head %}
+    <style>
+    #form *{
+        margin: 5px;
+    }
+    </style>
+    <script>
+    $(function(){
+        $("#focus").focus();
+    })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form action="/main/new" id="form" method="POST">
+            {% csrf_token %}
+            <span class="inline-block">Title of your paper:</span>
+            <br/><input name="title" id="focus" type="text">
+
+            <br/>
+            <br/>
+            <input type="submit" value="Create Paper">
+            <br/>
+        </form>
+    </div>
+    <br/>
+{% endblock %}

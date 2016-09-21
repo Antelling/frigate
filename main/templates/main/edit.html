@@ -1,0 +1,177 @@
+<!DOCTYPE html> {% load staticfiles %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script>
+        var notecardUp = false;
+        var sourcesUp = false;
+        var coloredGreenSources = [], coloredNotes = [];
+    </script>
+
+    <!--custom bootstrap theme-->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <!--even more custom theme-->
+    <link href="{% static 'app.css' %}" type="text/css" rel="stylesheet"/>
+    <link href="{% static 'style.css' %}" type="text/css" rel="stylesheet"/>
+    <!--normalize browser differences-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css" type="text/css"
+          rel="stylesheet">
+    <!--jquery-->
+    <script
+            src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+    <!--bootstrap js-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <title>Edit {{ paper.title }}</title>
+
+</head>
+
+<body>
+
+<!--nav-->
+<div class="container">
+
+    <div class="row">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Vosotros</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if user %}
+                            <li><a href="/">Hello, {{ user }}</a></li>
+                            <li><a href="/auth/logout/">Logout</a></li>
+                            <li><a href="/main/help" target="_blank">Help</a></li>
+                        {% else %}
+                            <li><a href="/auth/login/">Log In</a></li>
+                            <li><a href="/auth/signup/">Sign Up</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+</div>
+
+<div class="main">
+
+    <!--so now this is a full width div we can split up-->
+    <!--so on the left we want a block 50% wide that holds the notecards-->
+    <div id=notecard-container>
+        <div class=notecards>
+
+
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button id="search-button" class="btn btn-default" type="button">Go!</button>
+                </span>
+                <input type="text" id="search-box" class="form-control" placeholder="Search for...">
+            </div>
+
+            {% if paper.cards %}
+                {% for card in paper.cards %}
+
+                    <div id="{{ card.numb }}">
+                        <div class="notecard">
+                            <div class="notecard-number">
+                                #{{ card.numb }}
+                            </div>
+                            {% if card.page %}
+                                <div class="notecard-page">
+                                    pg. {{ card.page }}
+                                </div>
+                            {% endif %}
+                            <div class="notecard-fact">
+                                {{ card.fact }}
+                            </div>
+                            <span class="glyphicon glyphicon-trash notecard-delete" aria-hidden="true"></span>
+
+                            <div class="notecard-tags">
+                                {% for tag in card.tags %}<span>{{ tag }}</span>{% endfor %}
+                            </div>
+                            <div class="notecard-source">
+                                ({{ card.source }})
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div id=new-card-container>
+            <span class="new-card-button glyphicon glyphicon-open" id=new-notecard aria-hidden="true"></span>
+
+            <div id=spacer></div>
+
+            <form id=under>
+                <textarea id=fact-box placeholder="fact"></textarea>
+                <input type=text id=tags-box class=tags placeholder="tags"/>
+                <input type=text id=source-box placeholder=source class=source/>
+                <input type=text id=page-box placeholder=page>
+                <input type=submit value=add id=add-notecard>
+            </form>
+        </div>
+    </div>
+
+    <!--and on the right the actual paper-->
+    <div id=paper-editor>
+        <textarea id=textarea>{{ paper.text }}</textarea>
+
+        <div id=sources-container>
+            <span class="source-button glyphicon glyphicon-open" id=sources-button aria-hidden="true"></span>
+            <span class="source-button glyphicon glyphicon-plus" id=new-source-button aria-hidden="true"></span>
+
+            <div id=spacer></div>
+
+
+            <div id=source-list-container>
+
+                {% if paper.sources %}
+                    {% for source in paper.sources %}
+
+                        <div class="line" id="source-{{ source.numb }}">
+                            <span class="number">{{ source.numb }}</span><span class="url">{{ source.url }}</span><span
+                                class="glyphicon glyphicon-trash source-delete" aria-hidden="true"></span>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'app.js' %}"></script>
+<script src="{% static 'helpers.js' %}"></script>
+<script src="{% static 'notecardLogic.js' %}"></script>
+<script src="{% static 'editorLogic.js' %}"></script>
+<script src="{% static 'sourceLogic.js' %}"></script>
+<script src="{% static 'searchLogic.js' %}"></script>
+<script src="{% static 'keyboardShortcuts.js' %}"></script>
+<script src="{% static 'loadingLogic.js' %}"></script>
+<script src="{% static 'saveLogic.js' %}"></script>
+
+</body>
+
+</html>
