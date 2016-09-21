@@ -14,25 +14,28 @@ def logout_user(request):
 
 def signup_user(request):
     if request.user.is_authenticated():
-        #they did something weird
+        # they did something weird
         return HttpResponseRedirect('/')
 
     if request.method == "GET":
         return render(request, "authentication/signup.html", {'user': False})
 
     elif request.method == "POST":
-        try:
-            print(request.POST.get("username"))
-            models.User.objects.create_user(
-                request.POST.get("username"),
-                None,
-                request.POST.get("password")
-            )
-            user = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
+        print(request.POST.get("username"))
+        models.User.objects.create_user(
+            request.POST.get("username"),
+            None,
+            request.POST.get("password")
+        )
+        print("created")
+        user = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
+        print("authenticated")
+        if user is not None:
             login(request, user)
-            return HttpResponseRedirect("/")
-        except Exception as inst:
-            return HttpResponse("ERROR: " + str(inst))
+            print("logged in")
+        else:
+            return HttpResponse("error")
+        return HttpResponseRedirect("/")
 
 
 def login_user(request):
