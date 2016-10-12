@@ -17,7 +17,7 @@ if os.path.isfile(os.path.join(BASE_DIR, "DEV")):
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".cloudapp.net", ".frigateapp.com"]
 
 
 # Application definition
