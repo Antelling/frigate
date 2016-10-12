@@ -7,7 +7,7 @@ import json
 def new_paper(request):  # if get, serve new dialogue, if post, make test then redirect to edit page
     if request.method == "POST":
         user = User.objects.get(username=request.user.username)
-        title = request.POST.get("title").replace(" ", "_")
+        title = request.POST.get("title").strip().replace(" ", "_")
 
         if Paper.objects.filter(owner=user).filter(title=title).exists():
             return HttpResponseRedirect('/main/edit/' + title)

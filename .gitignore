@@ -36,3 +36,12 @@ coverage.xml
 
 # Translations
 *.mo
+
+# Dev flag
+DEV
+
+#secret file
+SECRET
+
+#database
+db.sqlite3
